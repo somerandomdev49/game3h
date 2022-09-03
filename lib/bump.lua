@@ -1,10 +1,12 @@
 local bump = {
-    _VERSION     = 'bump v3.1.7',
+    _VERSION     = 'bump v3.1.5',
     _URL         = 'https://github.com/kikito/bump.lua',
     _DESCRIPTION = 'A collision detection library for Lua',
     _LICENSE     = [[
       MIT LICENSE
+  
       Copyright (c) 2014 Enrique García Cota
+  
       Permission is hereby granted, free of charge, to any person obtaining a
       copy of this software and associated documentation files (the
       "Software"), to deal in the Software without restriction, including
@@ -12,8 +14,10 @@ local bump = {
       distribute, sublicense, and/or sell copies of the Software, and to
       permit persons to whom the Software is furnished to do so, subject to
       the following conditions:
+  
       The above copyright notice and this permission notice shall be included
       in all copies or substantial portions of the Software.
+  
       THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
       OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
       MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
@@ -151,12 +155,7 @@ local bump = {
       local ti1,ti2,nx1,ny1 = rect_getSegmentIntersectionIndices(x,y,w,h, 0,0,dx,dy, -math.huge, math.huge)
   
       -- item tunnels into other
-      if ti1
-      and ti1 < 1
-      and (abs(ti1 - ti2) >= DELTA) -- special case for rect going through another rect's corner
-      and (0 < ti1 + DELTA
-        or 0 == ti1 and ti2 > 0)
-      then
+      if ti1 and ti1 < 1 and (0 < ti1 + DELTA or 0 == ti1 and ti2 > 0) then
         ti, nx, ny = ti1, nx1, ny1
         overlaps   = false
       end
@@ -276,17 +275,19 @@ local bump = {
     goalY = goalY or y
   
     local tch, move  = col.touch, col.move
+    local sx, sy     = tch.x, tch.y
     if move.x ~= 0 or move.y ~= 0 then
-      if col.normal.x ~= 0 then
-        goalX = tch.x
+      if col.normal.x == 0 then
+        sx = goalX
       else
-        goalY = tch.y
+        sy = goalY
       end
     end
   
-    col.slide = {x = goalX, y = goalY}
+    col.slide = {x = sx, y = sy}
   
-    x,y = tch.x, tch.y
+    x,y          = tch.x, tch.y
+    goalX, goalY = sx, sy
     local cols, len  = world:project(col.item, x,y,w,h, goalX, goalY, filter)
     return goalX, goalY, cols, len
   end
@@ -538,8 +539,6 @@ local bump = {
   
   function World:queryRect(x,y,w,h, filter)
   
-    assertIsRect(x,y,w,h)
-  
     local cl,ct,cw,ch = grid_toCellRect(self.cellSize, x,y,w,h)
     local dictItemsInCellRect = getDictItemsInCellRect(self, cl,ct,cw,ch)
   
@@ -767,4 +766,3 @@ local bump = {
   }
   
   return bump
-  
