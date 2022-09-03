@@ -58,10 +58,9 @@ end
 function love.draw()
     love.graphics.setColor(1, 1, 1)
 
-    love.graphics.rectangle("fill", 100, 100, 50, 50)
     love.graphics.draw(playerImage, p.x, p.y, 0, 0.5, 0.5)
 
-    for _, attack in attacks do
+    for _, attack in ipairs(attacks) do
         if attack.type == ATTACK_BOLT then
             attack.done = lightningBolt(attack.t, attack.x, attack.y)
         elseif attack.type == ATTACK_LASER then
@@ -145,10 +144,10 @@ function laser(t, x, y)
     local MAX_HEIGHT = 30
     local MAX_WIDTH = love.graphics.getWidth() + 100
  
-    local offset = math.cos(math.pi * t / MAX_TIME) * love.graphics.getWidth()
+    local offset = cubicBezier(t / MAX_TIME) * love.graphics.getWidth()
 
     love.graphics.setColor(0.9, 0.2, 0.2)
-    love.graphics.rectangle("fill", cubicBezier(offset), y, MAX_WIDTH, MAX_HEIGHT)
+    love.graphics.rectangle("fill", offset - MAX_WIDTH, y, MAX_WIDTH, MAX_HEIGHT)
 
     return t > MAX_TIME
 end
