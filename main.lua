@@ -58,10 +58,9 @@ end
 function love.draw()
     love.graphics.setColor(1, 1, 1)
 
-    love.graphics.rectangle("fill", 100, 100, 50, 50)
     love.graphics.draw(playerImage, p.x, p.y, 0, 0.5, 0.5)
 
-    for _, attack in attacks do
+    for _, attack in ipairs(attacks) do
         if attack.type == ATTACK_BOLT then
             attack.done = lightningBolt(attack.t, attack.x, attack.y)
         elseif attack.type == ATTACK_LASER then
@@ -105,12 +104,11 @@ function love.update(dt)
                 handleAttacks() -- try again
                 break
             elseif attack.type == ATTACK_BOLT then
-                    lightningBolt(attack.t, attack.x, attack.y)
-                elseif attack.type == ATTACK_LASER then
-                    laser(attack.t, attack.x, attack.y)
-                elseif attack.type == ATTACK_RAIGUN then
-                    railgun(attack.t, attack.x, attack.y)
-                end
+                lightningBolt(attack.t, attack.x, attack.y)
+            elseif attack.type == ATTACK_LASER then
+                laser(attack.t, attack.x, attack.y)
+            elseif attack.type == ATTACK_RAIGUN then
+                railgun(attack.t, attack.x, attack.y)
             end
         end
     end
