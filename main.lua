@@ -33,3 +33,17 @@ function love.update(dt)
     elseif love.keyboard.isDown("w") then py = py - p.s * dt end
     p.x, p.y, _, _ = world:move(p, px, py)
 end
+
+function lightningBolt(t, x, y)
+    local MAX_TIME = 1
+    local MAX_HEIGHT = love.graphics.getHeight()
+    local MAX_WIDTH = 100
+
+    local width = math.sin(math.pi * t / MAX_TIME) * MAX_WIDTH
+
+    love.graphics.setColor(1, 1, 1)
+    love.graphics.rectangle("fill", love.graphics.getWidth() - x - width, 0, width, MAX_HEIGHT)
+    love.graphics.rectangle("fill", x, 0, width, MAX_HEIGHT)
+
+    return t > MAX_TIME
+end
