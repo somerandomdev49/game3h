@@ -105,12 +105,11 @@ function love.update(dt)
                 handleAttacks() -- try again
                 break
             elseif attack.type == ATTACK_BOLT then
-                    lightningBolt(attack.t, attack.x, attack.y)
-                elseif attack.type == ATTACK_LASER then
-                    laser(attack.t, attack.x, attack.y)
-                elseif attack.type == ATTACK_RAIGUN then
-                    railgun(attack.t, attack.x, attack.y)
-                end
+                lightningBolt(attack.t, attack.x, attack.y)
+            elseif attack.type == ATTACK_LASER then
+                laser(attack.t, attack.x, attack.y)
+            elseif attack.type == ATTACK_RAIGUN then
+                railgun(attack.t, attack.x, attack.y)
             end
         end
     end
