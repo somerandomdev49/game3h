@@ -31,6 +31,10 @@ local enemies = {}
 local attacks = {} -- player attacks
 
 local asd = {}
+
+local done = false
+local t = 0
+
 function love.load()
     p.x, p.y = 400-16, 300-24
     world:add(p, p.x, p.y, 32, 48)
@@ -47,7 +51,13 @@ function love.load()
     )
 end
 
+function testAttack()
+    laser(t, 400, 300)
+end
+
 function love.draw()
+    love.graphics.setColor(1, 1, 1)
+
     love.graphics.rectangle("fill", 100, 100, 50, 50)
     love.graphics.draw(playerImage, p.x, p.y, 0, 0.5, 0.5)
 
@@ -60,9 +70,13 @@ function love.draw()
             attack.done = railgun(attack.t, attack.x, attack.y)
         end
     end
+    if not done then
+        done = testAttack()
+    end
 end
 
 function love.update(dt)
+    t = t + dt
     local function movePlayer()
         local px, py = p.x, p.y
         if love.keyboard.isDown("a") then px = px - p.s * dt
@@ -115,6 +129,27 @@ function lightningBolt(t, x, y)
     love.graphics.setColor(1, 1, 1)
     love.graphics.rectangle("fill", love.graphics.getWidth() - x - width, 0, width, MAX_HEIGHT)
     love.graphics.rectangle("fill", x, 0, width, MAX_HEIGHT)
+
+    return t > MAX_TIME
+end
+
+function cubicBezier(x)
+    if x < 0.5 then
+        return 16 * x * x * x * x * x
+    else
+        return 1 - math.pow(-2 * x + 2, 5) / 2
+    end
+end
+
+function laser(t, x, y)
+    local MAX_TIME = 1
+    local MAX_HEIGHT = 30
+    local MAX_WIDTH = love.graphics.getWidth() + 100
+ 
+    local offset = math.cos(math.pi * t / MAX_TIME) * love.graphics.getWidth()
+
+    love.graphics.setColor(0.9, 0.2, 0.2)
+    love.graphics.rectangle("fill", cubicBezier(offset), y, MAX_WIDTH, MAX_HEIGHT)
 
     return t > MAX_TIME
 end
