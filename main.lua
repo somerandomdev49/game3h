@@ -146,10 +146,14 @@ function laser(t, x, y)
     local MAX_HEIGHT = 30
     local MAX_WIDTH = love.graphics.getWidth() + 100
  
-    local offset = math.cos(math.pi * t / MAX_TIME) * love.graphics.getWidth()
+    local offset = cubicBezier(t / MAX_TIME) * love.graphics.getWidth()
 
     love.graphics.setColor(0.9, 0.2, 0.2)
-    love.graphics.rectangle("fill", cubicBezier(offset), y, MAX_WIDTH, MAX_HEIGHT)
+    love.graphics.rectangle("fill", offset - MAX_WIDTH, y, MAX_WIDTH, MAX_HEIGHT)
 
     return t > MAX_TIME
+end
+
+function railgun()
+    
 end
