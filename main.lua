@@ -3,6 +3,33 @@ local bump = require "lib/bump"
 local playerImage = love.graphics.newImage("gfx/player.png")
 local p = { s = 140, x = 0, y = 0 }
 local world = bump.newWorld()
+
+function updateEnemy(self, dt)
+    self.x = self.x + self.dx * self.s * dt
+    self.y = self.y + self.dy * self.s * dt
+end
+
+function createEnemy(x, y, h)
+    return { x = x, y = y, s = 80, dx = 0, dy = 0, h = h }
+end
+
+ATTACK_BOLT = "Lightning Bolt"
+ATTACK_LASER = "Laser"
+ATTACK_RAILGUN = "Railgun"
+
+attackDmgs = {
+    [ATTACK_BOLT] = 100,
+    [ATTACK_LASER] = 50,
+    [ATTACK_RAILGUN] = 10
+}
+
+function createAttack(type, x, y)
+    return { type = type, dmg = attackDmgs[type], x=x, y=y, t=0 }
+end
+
+local enemies = {}
+local attacks = {} -- player attacks
+
 local asd = {}
 function love.load()
     p.x, p.y = 400-16, 300-24
@@ -23,15 +50,59 @@ end
 function love.draw()
     love.graphics.rectangle("fill", 100, 100, 50, 50)
     love.graphics.draw(playerImage, p.x, p.y, 0, 0.5, 0.5)
+
+    for _, attack in attacks do
+        if attack.type == ATTACK_BOLT then
+            attack.done = lightningBolt(attack.t, attack.x, attack.y)
+        elseif attack.type == ATTACK_LASER then
+            attack.done = laser(attack.t, attack.x, attack.y)
+        elseif attack.type == ATTACK_RAIGUN then
+            attack.done = railgun(attack.t, attack.x, attack.y)
+        end
+    end
 end
 
 function love.update(dt)
-    local px, py = p.x, p.y
-    if love.keyboard.isDown("a") then px = px - p.s * dt
-    elseif love.keyboard.isDown("d") then px = px + p.s * dt end
-    if love.keyboard.isDown("s") then py = py + p.s * dt
-    elseif love.keyboard.isDown("w") then py = py - p.s * dt end
-    p.x, p.y, _, _ = world:move(p, px, py)
+    local function movePlayer()
+        local px, py = p.x, p.y
+        if love.keyboard.isDown("a") then px = px - p.s * dt
+        elseif love.keyboard.isDown("d") then px = px + p.s * dt end
+        if love.keyboard.isDown("s") then py = py + p.s * dt
+        elseif love.keyboard.isDown("w") then py = py - p.s * dt end
+        p.x, p.y, _, _ = world:move(p, px, py)
+    end
+
+    -- call on enemy damage:
+    local function damageEnemy(index, damage)
+        enemies[index].h = enemies[index].h - damage
+        if enemies[index].h <= 0 then
+            table.remove(enemies, index)
+        end
+    end
+
+    local function moveEnemies()
+
+    end
+
+    local function handleAttacks()
+        for i, attack in ipairs(attacks) do
+            if attack.done then
+                attacks.remove(attacks, i)
+                handleAttacks() -- try again
+                break
+            elseif attack.type == ATTACK_BOLT then
+                    lightningBolt(attack.t, attack.x, attack.y)
+                elseif attack.type == ATTACK_LASER then
+                    laser(attack.t, attack.x, attack.y)
+                elseif attack.type == ATTACK_RAIGUN then
+                    railgun(attack.t, attack.x, attack.y)
+                end
+            end
+        end
+    end
+
+    movePlayer()
+    handleAttacks()
 end
 
 function lightningBolt(t, x, y)
