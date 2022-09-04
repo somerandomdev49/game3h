@@ -52,7 +52,7 @@ function love.load()
 end
 
 function testAttack()
-    railgun(t, p.x, p.y, 1)
+    return bulletHell(t, p.x, p.y, 1)
 end
 
 function love.draw()
@@ -160,8 +160,27 @@ function railgun(t, x, y, rad) -- player's x, y
     love.graphics.setColor(0.807843137254902, 0.8313725490196079, 0.8549019607843137)
     love.graphics.translate(x, y)
     love.graphics.rotate(rad)
-    -- love.graphics.translate(-x, -y)
     love.graphics.rectangle("fill", 0, 0, MAX_WIDTH, MAX_HEIGHT)
 
+    return t > MAX_TIME
+end
+
+function bulletHell(t, x, y)
+    local MAX_TIME = 1.5
+    local MAX_LENGTH = 10
+    local BULLETS_COUNT = 50
+
+    local offset = t*200
+
+    love.graphics.setColor(1.0, 0.7647058823529411, 0.0)
+    love.graphics.translate(x, y)
+    
+    for i = 0, BULLETS_COUNT, 1 do
+        local factor = math.random(0, 50)
+        local offset = offset + factor
+        love.graphics.rotate(math.rad(i+10))
+        love.graphics.line(offset, offset, MAX_LENGTH+offset, MAX_LENGTH+offset)
+    end
+ 
     return t > MAX_TIME
 end
