@@ -23,17 +23,12 @@ attackDmgs = {
     [ATTACK_RAILGUN] = 10
 }
 
-function createAttack(type, x, y)
-    return { type = type, dmg = attackDmgs[type], x=x, y=y, t=0 }
+function createAttack(type, t)
+    return { type = type, dmg = attackDmgs[type], t=0, table.unpack(t) }
 end
 
 local enemies = {}
 local attacks = {} -- player attacks
-
-local asd = {}
-
-local done = false
-local t = 0
 
 function love.load()
     p.x, p.y = 400-16, 300-24
@@ -51,10 +46,6 @@ function love.load()
     )
 end
 
-function testAttack()
-    laser(t, 400, 300)
-end
-
 function love.draw()
     love.graphics.setColor(1, 1, 1)
 
@@ -68,9 +59,6 @@ function love.draw()
         elseif attack.type == ATTACK_RAIGUN then
             attack.done = railgun(attack.t, attack.x, attack.y)
         end
-    end
-    if not done then
-        done = testAttack()
     end
 end
 
