@@ -52,7 +52,7 @@ function love.load()
 end
 
 function testAttack()
-    laser(t, 400, 300)
+    railgun(t, p.x, p.y, 1)
 end
 
 function love.draw()
@@ -140,18 +140,28 @@ function cubicBezier(x)
 end
 
 function laser(t, x, y)
-    local MAX_TIME = 1
+    local MAX_TIME = 0.85
     local MAX_HEIGHT = 30
     local MAX_WIDTH = love.graphics.getWidth() + 100
  
     local offset = cubicBezier(t / MAX_TIME) * love.graphics.getWidth()
 
-    love.graphics.setColor(0.9, 0.2, 0.2)
+    love.graphics.setColor(0.9372549019607843, 0.13725490196078433, 0.23529411764705882)
     love.graphics.rectangle("fill", offset - MAX_WIDTH, y, MAX_WIDTH, MAX_HEIGHT)
 
     return t > MAX_TIME
 end
 
-function railgun()
-    
+function railgun(t, x, y, rad) -- player's x, y
+    local MAX_TIME = 1
+    local MAX_HEIGHT = 30
+    local MAX_WIDTH = love.graphics.getWidth()
+
+    love.graphics.setColor(0.807843137254902, 0.8313725490196079, 0.8549019607843137)
+    love.graphics.translate(x, y)
+    love.graphics.rotate(rad)
+    -- love.graphics.translate(-x, -y)
+    love.graphics.rectangle("fill", 0, 0, MAX_WIDTH, MAX_HEIGHT)
+
+    return t > MAX_TIME
 end
