@@ -29,6 +29,7 @@ end
 
 local enemies = {}
 local attacks = {} -- player attacks
+local t = 0
 
 function love.load()
     p.x, p.y = 400-16, 300-24
@@ -64,6 +65,8 @@ function love.draw()
             attack.done = railgun(attack.t, attack.x, attack.y)
         end
     end
+
+    testAttack()
 end
 
 function love.update(dt)
@@ -149,7 +152,7 @@ function railgun(t, x, y, rad) -- player's x, y
     local MAX_HEIGHT = 30
     local MAX_WIDTH = love.graphics.getWidth()
 
-    love.graphics.setColor(0.807843137254902, 0.8313725490196079, 0.8549019607843137)
+    love.graphics.setColor(0.807, 0.831, 0.854)
     love.graphics.translate(x, y)
     love.graphics.rotate(rad)
     love.graphics.rectangle("fill", 0, 0, MAX_WIDTH, MAX_HEIGHT)
@@ -164,7 +167,7 @@ function bulletHell(t, x, y)
 
     local offset = t*200
 
-    love.graphics.setColor(1.0, 0.7647058823529411, 0.0)
+    love.graphics.setColor(1.0, 0.764, 0.0)
     love.graphics.translate(x, y)
     
     for i = 0, BULLETS_COUNT, 1 do
